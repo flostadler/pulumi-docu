@@ -16,21 +16,21 @@ import os
 def render(yaml_text, lang):
     with tempfile.TemporaryDirectory() as tmp:
         with open(os.path.join(tmp, "Pulumi.yaml"), "w") as fp:
-            fp.write(yaml_text)
-            sp.check_call(["pulumi", "convert", "--generate-only",
-                           "--from", "yaml",
-                           "--language", lang,
-                           "--out", os.path.join(tmp, "out")],
-                          cwd=tmp)
-            with open({
-                    "typescript": os.path.join(tmp, "out", "index.ts"),
-                    "go": os.path.join(tmp, "out", "main.go"),
-                    "python": os.path.join(tmp, "out", "__main__.py"),
-                    "java": os.path.join(tmp, "out", "src", "main", "java", "generated_program", "App.java"),
-                    "csharp": os.path.join(tmp, "out", "Program.cs"),
-            }[lang], "r") as fp:
-                code = fp.read()
-            return code
+            fp.write(yaml_text+"\n")
+        sp.check_call(["pulumi", "convert", "--generate-only",
+                       "--from", "yaml",
+                       "--language", lang,
+                       "--out", os.path.join(tmp, "out")],
+                      cwd=tmp)
+        with open({
+                "typescript": os.path.join(tmp, "out", "index.ts"),
+                "go": os.path.join(tmp, "out", "main.go"),
+                "python": os.path.join(tmp, "out", "__main__.py"),
+                "java": os.path.join(tmp, "out", "src", "main", "java", "generated_program", "App.java"),
+                "csharp": os.path.join(tmp, "out", "Program.cs"),
+        }[lang], "r") as fp:
+            code = fp.read()
+        return code
 
 
 def update_choosable(s):
